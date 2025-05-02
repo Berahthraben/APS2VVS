@@ -1,0 +1,125 @@
+URL = https://dogapi.dog/api/v2/breeds
+Script:
+// Test for response schema
+pm.test('Response should have the correct schema', function () {
+    const response = pm.response.json();
+    pm.expect(response).to.have.property('data').that.is.an('array');
+    pm.expect(response.data).to.be.an('array').that.is.not.empty;
+    pm.expect(response.data[0]).to.have.property('id').that.is.a('string');
+    pm.expect(response.data[0]).to.have.property('type').that.is.a('string');
+    pm.expect(response.data[0]).to.have.property('attributes').that.is.an('object');
+    pm.expect(response.data[0].attributes).to.have.property('name').that.is.a('string');
+    pm.expect(response.data[0].attributes).to.have.property('description').that.is.a('string');
+    pm.expect(response.data[0].attributes).to.have.property('life').that.is.an('object');
+    pm.expect(response.data[0].attributes.life).to.have.property('max').that.is.a('number');
+    pm.expect(response.data[0].attributes.life).to.have.property('min').that.is.a('number');
+    pm.expect(response.data[0].attributes).to.have.property('male_weight').that.is.an('object');
+    pm.expect(response.data[0].attributes.male_weight).to.have.property('max').that.is.a('number');
+    pm.expect(response.data[0].attributes.male_weight).to.have.property('min').that.is.a('number');
+    pm.expect(response.data[0].attributes).to.have.property('female_weight').that.is.an('object');
+    pm.expect(response.data[0].attributes.female_weight).to.have.property('max').that.is.a('number');
+    pm.expect(response.data[0].attributes.female_weight).to.have.property('min').that.is.a('number');
+    pm.expect(response.data[0].attributes).to.have.property('hypoallergenic').that.is.a('boolean');
+    pm.expect(response.data[0]).to.have.property('relationships').that.is.an('object');
+    pm.expect(response.data[0].relationships).to.have.property('group').that.is.an('object');
+    pm.expect(response.data[0].relationships.group).to.have.property('data').that.is.an('object');
+    pm.expect(response.data[0].relationships.group.data).to.have.property('id').that.is.a('string');
+    pm.expect(response.data[0].relationships.group.data).to.have.property('type').that.is.a('string');
+});
+var template = `
+<style type="text/css">
+    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}
+    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}
+    .tftable tr {background-color:#ffffff;}
+    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}
+    .tftable tr:hover {background-color:#e0ffff;}
+</style>
+
+<table class="tftable" border="1">
+    <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Max Life</th>
+        <th>Min Life</th>
+        <th>Max Male Weight</th>
+        <th>Min Male Weight</th>
+        <th>Max Female Weight</th>
+        <th>Min Female Weight</th>
+        <th>Hypoallergenic</th>
+        <th>Group ID</th>
+        <th>Group Type</th>
+    </tr>
+    
+    {{#each response.data}}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{type}}</td>
+            <td>{{attributes.name}}</td>
+            <td>{{attributes.description}}</td>
+            <td>{{attributes.life.max}}</td>
+            <td>{{attributes.life.min}}</td>
+            <td>{{attributes.male_weight.max}}</td>
+            <td>{{attributes.male_weight.min}}</td>
+            <td>{{attributes.female_weight.max}}</td>
+            <td>{{attributes.female_weight.min}}</td>
+            <td>{{attributes.hypoallergenic}}</td>
+            <td>{{relationships.group.data.id}}</td>
+            <td>{{relationships.group.data.type}}</td>
+        </tr>
+    {{/each}}
+</table>
+`;
+
+function constructVisualizerPayload() {
+    return {response: pm.response.json()}
+}
+
+pm.visualizer.set(template, constructVisualizerPayload());
+
+
+
+
+
+-----------------------
+URL = https://dogapi.dog/api/v2/facts?limit=2
+Script:
+// Test for response schema
+pm.test('Response should have the correct schema', () => {
+    const response = pm.response.json();
+    pm.expect(response).to.have.property('data').that.is.an('array').and.not.empty;
+    pm.expect(response.data[0]).to.have.property('id').that.is.a('string');
+    pm.expect(response.data[0]).to.have.property('type').that.is.a('string');
+    pm.expect(response.data[0].attributes).to.have.property('body').that.is.a('string');
+var template = `
+<style type="text/css">
+    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}
+    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}
+    .tftable tr {background-color:#ffffff;}
+    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}
+    .tftable tr:hover {background-color:#e0ffff;}
+</style>
+
+<table class="tftable" border="1">
+    <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Body</th>
+    </tr>
+    {{#each response.data}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{type}}</td>
+        <td>{{attributes.body}}</td>
+    </tr>
+    {{/each}}
+</table>
+`;
+
+function constructVisualizerPayload() {
+    var res = pm.response.json();
+    return { response: res };
+}
+
+pm.visualizer.set(template, constructVisualizerPayload());});
